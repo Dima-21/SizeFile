@@ -32,20 +32,15 @@ namespace TreeView
             foreach (var item in Info.EnumerateDirectories())
                 info.Add(new Info() { Name = item.Name });
             SizeFolders(Info);
+            Folders1(Info);
             foreach (var item in info)
             {
-                listView1.Items.Add(new ListViewItem(new string[] { item.Name, item.Size.ToString(), "", ""}));
+                listView1.Items.Add(new ListViewItem(new string[] { item.Name, item.Size.ToString(), item.Folders.ToString(), ""}));
             }
 
         }
 
-        private void SizeFolders(DirectoryInfo df)
-        {
-            foreach (var item1 in df.EnumerateDirectories())
-            {
-                info.First(x=>x.Name==item1.Name).Size = SizeFolders1(item1);
-            }
-        }
+       
 
         private void Folders1(DirectoryInfo df)
         {
@@ -59,13 +54,20 @@ namespace TreeView
         private int Folders2(DirectoryInfo df)
         {
             int folders = 0;
-            foreach (var item1 in df.EnumerateDirectories())
-            {
-                info.First(x => x.Name == item1.Name).Size = SizeFolders1(item1);
-            }
+         
             foreach (var item in df.EnumerateDirectories())
             {
-                SizeFolders1(item);
+                folders++;
+                Folders2(item);
+            }
+            return folders;
+        }
+
+        private void SizeFolders(DirectoryInfo df)
+        {
+            foreach (var item in df.EnumerateDirectories())
+            {
+                info.First(x => x.Name == item.Name).Size = SizeFolders1(item);
             }
         }
         private long SizeFolders1(DirectoryInfo df)
